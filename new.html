@@ -1,11 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8">
+<title>Transport Management System</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+}
+body{
+    margin:0;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:#fff;
+}
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:40px;
+    display:grid;
+    grid-template-columns:1fr 420px;
+    gap:40px;
+}
+h1{
+    font-size:44px;
+    margin-bottom:10px;
+}
+.feature{
+    background:rgba(255,255,255,0.08);
+    padding:15px;
+    border-radius:15px;
+    margin-bottom:12px;
+}
+.card{
+    background:rgba(255,255,255,0.1);
+    padding:25px;
+    border-radius:22px;
+}
+input,select{
+    width:100%;
+    padding:12px;
+    border-radius:25px;
+    border:none;
+    margin:8px 0;
+    outline:none;
+}
+button{
+    width:100%;
+    padding:13px;
+    border-radius:25px;
+    border:none;
+    background:#22c55e;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:15px;
+}
+button:hover{
+    background:#16a34a;
+}
+.success{
+    background:#16a34a;
+    padding:12px;
+    border-radius:12px;
+    margin-bottom:15px;
+}
+.vehicle-box{
+    display:flex;
+    gap:12px;
+    margin:12px 0;
+}
+.vehicle{
+    flex:1;
+    padding:14px;
+    border-radius:18px;
+    text-align:center;
+    cursor:pointer;
+    background:rgba(255,255,255,0.12);
+    border:2px solid transparent;
+}
+.vehicle.active{
+    border-color:#22c55e;
+    background:rgba(34,197,94,0.25);
+}
+.links{
+    text-align:center;
+    margin-top:12px;
+}
+.links a{
+    color:#fff;
+    text-decoration:none;
+    margin:0 8px;
+}
+.track-box{
+    margin-top:30px;
+    background:rgba(255,255,255,0.08);
+    padding:25px;
+    border-radius:22px;
+}
+.result{
+    margin-top:15px;
+    background:rgba(0,0,0,0.35);
+    padding:15px;
+    border-radius:15px;
+}
+</style>
 </head>
+
 <body>
-<link rel="stylesheet" href="index.php">
+
+<div class="container">
+
+<!-- LEFT SIDE -->
+<div>
+<h1>Book Transport Instantly</h1>
+<p>No login required • Fast • Reliable</p>
+
+<div class="feature">🚚 All India Transport</div>
+<div class="feature">📦 Household & Commercial Goods</div>
+<div class="feature">📍 Live Shipment Tracking</div>
+<div class="feature">⚡ Fast Delivery Network</div>
+</div>
+
+<!-- RIGHT SIDE -->
+<div class="card">
+
+<h2>Quick Booking</h2>
+
+<div id="successMsg" class="success" style="display:none;"></div>
+
+<input type="text" id="name" placeholder="Name">
+<input type="text" id="phone" placeholder="Phone">
+<input type="text" id="pickup" placeholder="Pickup Location">
+<input type="text" id="drop" placeholder="Drop Location">
+
+<div class="vehicle-box">
+<div class="vehicle active" onclick="selectVehicle('Truck')">🚛 Truck</div>
+<div class="vehicle" onclick="selectVehicle('Mini Truck')">🚚 Mini Truck</div>
+</div>
+
+<button onclick="bookNow()">Book Now</button>
+
+<div class="links">
+<a href="login.php">Login</a> |
+<a href="register.php">Register</a> |
+<a href="#track">Track Shipment</a>
+</div>
+
+<!-- TRACKING -->
+<div class="track-box" id="track">
+<h3>Track Shipment</h3>
+<input type="text" id="trackId" placeholder="Enter Tracking ID">
+<button onclick="trackShipment()">Track Now</button>
+
+<div id="trackResult" class="result" style="display:none;"></div>
+</div>
+
+</div>
+</div>
+
+<script>
+let selectedVehicle = "Truck";
+let bookings = {};
+
+function selectVehicle(v){
+    selectedVehicle = v;
+    document.querySelectorAll('.vehicle').forEach(el=>el.classList.remove('active'));
+    event.target.classList.add('active');
+}
+
+function bookNow(){
+    let name = document.getElementById("name").value;
+    let phone = document.getElementById("phone").value;
+
+    if(name=="" || phone==""){
+        alert("Please fill required details");
+        return;
+    }
+
+    let tracking = "TRK"+Math.floor(10000 + Math.random()*90000);
+
+    bookings[tracking] = {
+        name:name,
+        vehicle:selectedVehicle,
+        status:"Booking Confirmed"
+    };
+
+    let msg = document.getElementById("successMsg");
+    msg.style.display="block";
+    msg.innerHTML="✅ Booking Successful! <br>Tracking ID: <b>"+tracking+"</b>";
+}
+
+function trackShipment(){
+    let id = document.getElementById("trackId").value;
+    let res = document.getElementById("trackResult");
+
+    if(bookings[id]){
+        res.style.display="block";
+        res.innerHTML = `
+        <b>Name:</b> ${bookings[id].name}<br>
+        <b>Vehicle:</b> ${bookings[id].vehicle}<br>
+        <b>Status:</b> ${bookings[id].status}
+        `;
+    }else{
+        res.style.display="block";
+        res.innerHTML="❌ Invalid Tracking ID";
+    }
+}
+</script>
+
 </body>
 </html>
